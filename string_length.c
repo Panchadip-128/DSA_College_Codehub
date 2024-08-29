@@ -6,7 +6,10 @@ int find_len(char str[], int index) {
 }
 
 int main() {
-    char str[] = "Hello, world!";
+   char str[100];
+
+    printf("Enter a string: ");
+    scanf("%99s", str);
     int length = find_len(str, 0);
     printf("Length of the string is: %d\n", length);
     return 0;
