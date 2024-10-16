@@ -1,0 +1,89 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#define MAX 100
+typedef struct {
+ int items[MAX];
+ int front, rear;
+} Queue;
+// Function to initialize the queue
+void initQueue(Queue* q) {
+ q->front = -1;
+ q->rear = -1;
+}
+bool empty(Queue* q) {
+ return (q->front == -1);
+}
+// Function to enqueue an element in the queue
+void enqueue(Queue* q, int x) {
+ if ((q->rear + 1) % MAX == q->front) {
+ printf("Queue is full. Cannot enqueue %d\n", x);
+ return;
+ }
+ if (empty(q)) {
+ q->front = 0;
+ q->rear = 0;
+ } else {
+ q->rear = (q->rear + 1) % MAX;
+ }
+ q->items[q->rear] = x;
+}
+// Function to dequeue an element from the queue
+int dequeue(Queue* q) {
+ if (empty(q)) {
+ printf("Queue is empty. Cannot dequeue\n");
+ return -1;
+ }
+ int x = q->items[q->front];
+ if (q->front == q->rear) {
+ // Only one element was in the queue
+ q->front = q->rear = -1;
+ } else {
+ q->front = (q->front + 1) % MAX;
+ }
+ return x;
+}
+// Function to display the queue
+void displayQueue(Queue* q) {
+ if (empty(q)) {
+ printf("Queue is empty\n");
+ return;
+ }
+ printf("Queue contents: ");
+ int i = q->front;
+ while (i != q->rear) {
+ printf("%d ", q->items[i]);
+ i = (i + 1) % MAX;
+ }
+ printf("%d\n", q->items[i]); // Print the last element
+}
+// Function to reverse the queue using recursion
+void reverseQueue(Queue* q) {
+ if (empty(q)) {
+ return;
+ }
+ // Dequeue the front element
+ int x = dequeue(q);
+ 
+ // Recursively reverse the remaining queue
+ reverseQueue(q);
+ 
+ // Enqueue the dequeued element at the rear
+ enqueue(q, x);
+}
+int main() {
+ Queue q;
+ initQueue(&q);
+ // Enqueue some elements in the queue
+ enqueue(&q, 1);
+ enqueue(&q, 2);
+ enqueue(&q, 3);
+ enqueue(&q, 4);
+ enqueue(&q, 5);
+ printf("Original queue: \n");
+ displayQueue(&q);
+ reverseQueue(&q);
+ printf("\nReversed queue: \n");
+ displayQueue(&q);
+ return 0;
+}
