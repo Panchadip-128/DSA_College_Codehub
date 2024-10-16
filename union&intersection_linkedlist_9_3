@@ -1,0 +1,100 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Define node structure
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+// Create a new node
+struct Node* createNode(int data) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
+}
+
+// Insert node at the end of the linked list
+void insertAtEnd(struct Node* head, int data) {
+    struct Node* newNode = createNode(data);
+    struct Node* temp = head;
+
+    while (temp->next != NULL) {
+        temp = temp->next;
+    }
+    temp->next = newNode;
+}
+
+// Check if a value exists in the list
+int existsInList(struct Node* head, int value) {
+    struct Node* temp = head->next; // Skip header node
+    while (temp != NULL) {
+        if (temp->data == value) {
+            return 1; // Value exists in list
+        }
+        temp = temp->next;
+    }
+    return 0; // Value does not exist
+}
+
+// Perform Union of two linked lists
+struct Node* unionWithHeader(struct Node* head1, struct Node* head2) {
+    struct Node* result = createNode(0); // Create header node for result
+
+    struct Node* temp = head1->next; // Skip header node of head1
+    while (temp != NULL) {
+        insertAtEnd(result, temp->data);
+        temp = temp->next;
+    }
+
+    temp = head2->next; // Skip header node of head2
+    while (temp != NULL) {
+        if (!existsInList(result, temp->data)) {
+            insertAtEnd(result, temp->data);
+        }
+        temp = temp->next;
+    }
+
+    return result;
+}
+
+// Display linked list
+void display(struct Node* head) {
+    struct Node* temp = head->next; // Skip header node
+    while (temp != NULL) {
+        printf("%d -> ", temp->data);
+        temp = temp->next;
+    }
+    printf("NULL\n");
+}
+
+// Main function to test union and intersection
+int main() {
+    struct Node* head1 = createNode(0); // Header node
+    struct Node* head2 = createNode(0); // Header node
+
+    // Inserting data into first list (with header node)
+    insertAtEnd(head1, 1);
+    insertAtEnd(head1, 3);
+    insertAtEnd(head1, 5);
+
+    // Inserting data into second list (with header node)
+    insertAtEnd(head2, 3);
+    insertAtEnd(head2, 6);
+    insertAtEnd(head2, 9);
+
+    printf("List 1: ");
+    display(head1);
+
+    printf("List 2: ");
+    display(head2);
+
+    // Perform union
+    struct Node* unionList = unionWithHeader(head1, head2);
+
+    printf("Union: ");
+    display(unionList);
+
+    return 0;
+}
