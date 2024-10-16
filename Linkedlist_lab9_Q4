@@ -1,0 +1,84 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Definition of a node in the singly linked list
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+// Function to delete duplicates in a sorted linked list
+void deleteDuplicates(struct Node* head) {
+    if (head == NULL) {
+        // If the list is empty, there's nothing to do
+        return;
+    }
+
+    struct Node* current = head;
+    
+    // Traverse the list
+    while (current != NULL && current->next != NULL) {
+        if (current->data == current->next->data) {
+            // Duplicate found, delete the next node
+            struct Node* temp = current->next;
+            current->next = current->next->next;
+            free(temp);  // Free the memory of the deleted node
+        } else {
+            // Move to the next node if there's no duplicate
+            current = current->next;
+        }
+    }
+}
+
+// Function to insert a new node at the end of the list
+void insert(struct Node** head_ref, int new_data) {
+    struct Node* new_node = (struct Node*)malloc(sizeof(struct Node));
+    struct Node* last = *head_ref;
+
+    new_node->data = new_data;
+    new_node->next = NULL;
+
+    if (*head_ref == NULL) {
+        *head_ref = new_node;
+        return;
+    }
+
+    while (last->next != NULL) {
+        last = last->next;
+    }
+
+    last->next = new_node;
+}
+
+// Function to print the linked list
+void printList(struct Node* node) {
+    while (node != NULL) {
+        printf("%d -> ", node->data);
+        node = node->next;
+    }
+    printf("NULL\n");
+}
+
+// Main function to test the deleteDuplicates function
+int main() {
+    struct Node* head = NULL;
+
+    // Creating a sorted linked list with duplicates: 1 -> 1 -> 2 -> 3 -> 3 -> 4 -> NULL
+    insert(&head, 1);
+    insert(&head, 1);
+    insert(&head, 2);
+    insert(&head, 3);
+    insert(&head, 3);
+    insert(&head, 4);
+
+    printf("Original list:\n");
+    printList(head);
+
+    // Deleting duplicates
+    deleteDuplicates(head);
+
+    printf("List after deleting duplicates:\n");
+    printList(head);
+
+    return 0;
+}
