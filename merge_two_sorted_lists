@@ -1,0 +1,116 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Definition of a Node
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+// Function to create a new node
+struct Node* createNode(int data) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
+}
+
+// Function to insert node at the end of the linked list
+struct Node* insertAtEnd(struct Node* head, int data) {
+    struct Node* newNode = createNode(data);
+    if (head == NULL) {
+        return newNode;
+    }
+    struct Node* temp = head;
+    while (temp->next != NULL) {
+        temp = temp->next;
+    }
+    temp->next = newNode;
+    return head;
+}
+
+// Function to display the linked list
+void display(struct Node* head) {
+    struct Node* temp = head;
+    while (temp != NULL) {
+        printf("->%d", temp->data);
+        temp = temp->next;
+    }
+    printf("\n");
+}
+
+// Function to merge two sorted linked lists
+struct Node* mergeSortedLists(struct Node* headA, struct Node* headB) {
+    if (headA == NULL) return headB;
+    if (headB == NULL) return headA;
+
+    struct Node* mergedHead = NULL;
+
+    if (headA->data < headB->data) {
+        mergedHead = headA;
+        headA = headA->next;
+    } else {
+        mergedHead = headB;
+        headB = headB->next;
+    }
+
+    struct Node* temp = mergedHead;
+
+    while (headA != NULL && headB != NULL) {
+        if (headA->data < headB->data) {
+            temp->next = headA;
+            headA = headA->next;
+        } else {
+            temp->next = headB;
+            headB = headB->next;
+        }
+        temp = temp->next;
+    }
+
+    if (headA != NULL) {
+        temp->next = headA;
+    } else {
+        temp->next = headB;
+    }
+
+    return mergedHead;
+}
+
+int main() {
+    int N1, N2, i, value;
+
+    // Read input for class A and class B
+    printf("Enter the number of students in Class A and Class B: ");
+    scanf("%d %d", &N1, &N2);
+
+    struct Node* headA = NULL;
+    struct Node* headB = NULL;
+
+    printf("Enter heights of students in Class A: ");
+    for (i = 0; i < N1; i++) {
+        scanf("%d", &value);
+        headA = insertAtEnd(headA, value);
+    }
+
+    printf("Enter heights of students in Class B: ");
+    for (i = 0; i < N2; i++) {
+        scanf("%d", &value);
+        headB = insertAtEnd(headB, value);
+    }
+
+    // Display Class A and Class B
+    printf("Class A:\n");
+    display(headA);
+
+    printf("Class B:\n");
+    display(headB);
+
+    // Merge the two lists
+    struct Node* mergedHead = mergeSortedLists(headA, headB);
+
+    // Display merged class
+    printf("Joint Class:\n");
+    display(mergedHead);
+
+    return 0;
+}
