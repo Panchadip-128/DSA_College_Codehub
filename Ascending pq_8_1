@@ -1,0 +1,135 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+
+#define MAX_SIZE 100  // Maximum size of the heap
+
+typedef struct {
+    int data[MAX_SIZE];
+    int size;
+} AscendingPriorityQueue;
+
+// Function to initialize the priority queue
+void initQueue(AscendingPriorityQueue* pq) {
+    pq->size = 0;
+}
+
+// Function to get the index of the parent node
+int parent(int i) {
+    return (i - 1) / 2;
+}
+
+// Function to get the index of the left child node
+int leftChild(int i) {
+    return 2 * i + 1;
+}
+
+// Function to get the index of the right child node
+int rightChild(int i) {
+    return 2 * i + 2;
+}
+
+// Function to swap two elements in the array
+void swap(int* a, int* b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+// Function to heapify up (used when inserting an element)
+void heapifyUp(AscendingPriorityQueue* pq, int i) {
+    while (i > 0 && pq->data[parent(i)] > pq->data[i]) {
+        swap(&pq->data[parent(i)], &pq->data[i]);
+        i = parent(i);
+    }
+}
+
+// Function to insert an element into the priority queue
+void push(AscendingPriorityQueue* pq, int item) {
+    if (pq->size >= MAX_SIZE) {
+        printf("Priority queue overflow!\n");
+        return;
+    }
+
+    // Insert the new element at the end of the heap
+    pq->data[pq->size] = item;
+    pq->size++;
+
+    // Restore heap property by heapifying up
+    heapifyUp(pq, pq->size - 1);
+
+    printf("Inserted %d, Queue size: %d\n", item, pq->size);
+}
+
+// Function to heapify down (used when removing an element)
+void heapifyDown(AscendingPriorityQueue* pq, int i) {
+    int smallest = i;
+    int left = leftChild(i);
+    int right = rightChild(i);
+
+    if (left < pq->size && pq->data[left] < pq->data[smallest])
+        smallest = left;
+    if (right < pq->size && pq->data[right] < pq->data[smallest])
+        smallest = right;
+
+    if (smallest != i) {
+        swap(&pq->data[i], &pq->data[smallest]);
+        heapifyDown(pq, smallest);
+    }
+}
+
+// Function to remove and return the smallest element (root) from the queue
+int pop(AscendingPriorityQueue* pq) {
+    if (pq->size == 0) {
+        printf("Queue is empty!\n");
+        return INT_MIN;  // Return a minimum integer value if the queue is empty
+    }
+
+    int root = pq->data[0];  // Get the root (smallest element)
+
+    // Replace the root with the last element in the heap
+    pq->data[0] = pq->data[pq->size - 1];
+    pq->size--;
+
+    // Restore heap property by heapifying down
+    heapifyDown(pq, 0);
+
+    printf("Removed %d, Queue size: %d\n", root, pq->size);
+    return root;
+}
+
+// Function to return the smallest element (root) without removing it
+int peek(AscendingPriorityQueue* pq) {
+    if (pq->size == 0) {
+        printf("Queue is empty!\n");
+        return INT_MIN;
+    }
+
+    return pq->data[0];
+}
+
+// Function to check if the priority queue is empty
+int isEmpty(AscendingPriorityQueue* pq) {
+    return pq->size == 0;
+}
+
+// Main function to test the ascending priority queue
+int main() {
+    AscendingPriorityQueue pq;
+    initQueue(&pq);
+
+    push(&pq, 10);
+    push(&pq, 5);
+    push(&pq, 20);
+    push(&pq, 3);
+
+    printf("Peek: %d\n", peek(&pq));  // Should return 3
+
+    pop(&pq);  // Removes 3
+    pop(&pq);  // Removes 5
+    pop(&pq);  // Removes 10
+    pop(&pq);  // Removes 20
+    pop(&pq);  // Queue is empty
+
+    return 0;
+}
