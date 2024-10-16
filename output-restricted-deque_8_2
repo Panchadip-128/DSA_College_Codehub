@@ -1,0 +1,90 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#define MAX 100
+typedef struct {
+ char items[MAX][100];
+ int front, rear;
+} Deque;
+ void initDeque(Deque *dq) {
+ dq->front = -1;
+ dq->rear = -1;
+}
+bool isEmpty(Deque *dq) {
+ return (dq->front == -1);
+}
+bool isFull(Deque *dq) {
+ return ((dq->rear + 1) % MAX == dq->front);
+}
+void insertFront(Deque *dq, char *str) {
+ if (isFull(dq)) {
+ printf("Deque is full. Cannot insert '%s' at the front.\n", str);
+ return;
+ }
+ if (isEmpty(dq)) {
+ dq->front = dq->rear = 0;
+ } else {
+ dq->front = (dq->front - 1 + MAX) % MAX;
+ }
+ strcpy(dq->items[dq->front], str);
+ printf("Inserted '%s' at the front.\n", str);
+}
+ void insertRear(Deque *dq, char *str) {
+ if (isFull(dq)) {
+ printf("Deque is full. Cannot insert '%s' at the rear.\n", str);
+ return;
+ }
+ if (isEmpty(dq)) {
+ dq->front = dq->rear = 0;
+ } else {
+ dq->rear = (dq->rear + 1) % MAX;
+ }
+ strcpy(dq->items[dq->rear], str);
+ printf("Inserted '%s' at the rear.\n", str);
+}
+// Delete from the front (output restricted, no delete from rear)
+void deleteFront(Deque *dq) {
+ if (isEmpty(dq)) {
+ printf("Deque is empty. Cannot delete.\n");
+ return;
+ }
+ printf("Deleted '%s' from the front.\n", dq->items[dq->front]);
+ if (dq->front == dq->rear) {
+ // Only one element was present
+ dq->front = dq->rear = -1;
+ } else {
+ dq->front = (dq->front + 1) % MAX;
+ }
+}
+void displayDeque(Deque *dq) {
+ if (isEmpty(dq)) {
+ printf("Deque is empty.\n");
+ return;
+ }
+ printf("Deque contents: ");
+ int i = dq->front;
+ while (i != dq->rear) {
+ printf("%s ", dq->items[i]);
+ i = (i + 1) % MAX;
+ }
+ printf("%s\n", dq->items[i]);
+}
+int main() {
+ Deque dq;
+ initDeque(&dq);
+ insertRear(&dq, "apple");
+ insertFront(&dq, "banana");
+ insertRear(&dq, "cherry");
+ insertFront(&dq, "date");
+ insertRear(&dq, "elderberry");
+ displayDeque(&dq);
+ deleteFront(&dq);
+ displayDeque(&dq);
+ deleteFront(&dq);
+ displayDeque(&dq);
+ insertRear(&dq, "fig");
+ insertFront(&dq, "grape");
+ displayDeque(&dq);
+ return 0;
+}
