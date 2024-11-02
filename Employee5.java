@@ -76,7 +76,7 @@ class PartTimeEmp extends Employee{
 }
 
 
-public class Employee {
+public class Employee5 {
 		public static void main(String args[]) {
 			FullTimeEmp fte=new FullTimeEmp("Alice",1,30000,5000,500);
 			PartTimeEmp pte=new PartTimeEmp("Bob",2,40);
